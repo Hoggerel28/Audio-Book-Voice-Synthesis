@@ -1,4 +1,4 @@
-"""文件读取模块：支持 TXT / PDF / EPUB 文本导入。"""
+﻿"""文件读取模块：支持 TXT / PDF / EPUB 文本导入。"""
 from __future__ import annotations
 
 from pathlib import Path

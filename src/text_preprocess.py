@@ -1,4 +1,4 @@
-"""文本预处理模块：清洗、分句、多音字提示性纠错。"""
+﻿"""文本预处理模块：清洗、分句、多音字提示性纠错。"""
 from __future__ import annotations
 
 import re

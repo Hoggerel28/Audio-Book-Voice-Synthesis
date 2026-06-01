@@ -1,8 +1,9 @@
-"""语音合成模块：使用 edge-tts 生成 MP3，并尽量转换 WAV。"""
+﻿"""语音合成模块：使用 edge-tts 生成 MP3，并尽量转换 WAV。"""
 from __future__ import annotations
 
 import asyncio
 import shutil
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from uuid import uuid4
@@ -63,6 +64,7 @@ def merge_mp3_files(mp3_files: list[Path], output_path: Path) -> None:
     except Exception:
         pass
 
+    # 降级：如果只有一段，直接复制；多段时二进制拼接，部分播放器可正常播放。
     if len(mp3_files) == 1:
         shutil.copyfile(mp3_files[0], output_path)
     else:

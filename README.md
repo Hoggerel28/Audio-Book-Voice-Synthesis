@@ -1,4 +1,4 @@
-# 基于语音合成的有声读物生成算法设计与实现
+﻿# 基于语音合成的有声读物生成算法设计与实现
 
 这是一个机器学习课程设计项目，目标是把 TXT / PDF / EPUB 读物文本转换为有声读物音频。
 
@@ -54,7 +54,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-运行后浏览器会打开 Gradio 页面。（目前还在测试阶段）
+运行后浏览器会打开 Gradio 页面。
 
 ## 运行 Notebook
 

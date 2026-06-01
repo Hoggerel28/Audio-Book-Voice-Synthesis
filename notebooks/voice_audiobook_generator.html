@@ -47,11 +47,14 @@ print(raw_text[:500])</code></pre></div>
 <pre><code>result = preprocess_text(raw_text, max_len=80)
 print(&quot;清洗后文本：&quot;)
 print(result.cleaned_text)
-print(&quot;\n分句结果：&quot;)
+print(&quot;
+分句结果：&quot;)
 for i, sentence in enumerate(result.sentences, start=1):
     print(i, sentence)
-print(&quot;\n多音字处理说明：&quot;)
-print(&quot;\n&quot;.join(result.correction_notes) or &quot;未命中示例规则&quot;)</code></pre></div>
+print(&quot;
+多音字处理说明：&quot;)
+print(&quot;
+&quot;.join(result.correction_notes) or &quot;未命中示例规则&quot;)</code></pre></div>
 <div class="cell md">
 <h2>5. 语音合成算法</h2>
 <p>使用 edge-tts 在线语音合成。为了课堂演示速度，下面默认只合成前几句。若未联网，此单元可能失败。</p>

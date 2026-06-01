@@ -1,4 +1,4 @@
-"""Gradio 网页应用。"""
+﻿"""Gradio 网页应用。"""
 from __future__ import annotations
 
 from pathlib import Path
