@@ -53,6 +53,8 @@ pip install -r requirements.txt
 ```bash
 python app.py
 ```
+<img width="1508" height="1835" alt="image" src="https://github.com/user-attachments/assets/902809e1-e443-469e-9260-fd86b21ea956" />
+
 
 运行后浏览器会打开 Gradio 页面。
 
