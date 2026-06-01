@@ -54,7 +54,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-运行后浏览器会打开 Gradio 页面。
+运行后浏览器会打开 Gradio 页面。（目前还在测试阶段）
 
 ## 运行 Notebook
 
