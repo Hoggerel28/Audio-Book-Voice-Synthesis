@@ -53,6 +53,8 @@ pip install -r requirements.txt
 ```bash
 python app.py
 ```
+<img width="1508" height="1835" alt="image" src="https://github.com/user-attachments/assets/2da31547-acdf-4360-9f3f-d650a562e8e2" />
+
 
 运行后终端会显示类似下面的地址：
 
