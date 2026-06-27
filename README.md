@@ -50,6 +50,7 @@ pip install -r requirements.txt
 如果只演示 TXT/PDF，可暂时不安装 EPUB 相关依赖。
 
 ## 运行网页系统
+<img width="2233" height="2827" alt="image" src="https://github.com/user-attachments/assets/afcc07dd-e8f5-4e8d-a5bd-f433dac674eb" />
 
 ```bash
 python app.py
