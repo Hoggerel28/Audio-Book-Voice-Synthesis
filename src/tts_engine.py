@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import asyncio
 import shutil
-import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from uuid import uuid4
@@ -16,6 +15,10 @@ VOICE_OPTIONS = {
     "中文女声-晓伊（活泼）": "zh-CN-XiaoyiNeural",
     "中文女声-辽宁方言": "zh-CN-liaoning-XiaobeiNeural",
     "中文男声-陕西方言": "zh-CN-shaanxi-XiaoniNeural",
+    "中文女声-小双（童声）": "zh-CN-XiaoshuangNeural",
+    "中文女声-小梦（温柔）": "zh-CN-XiaomengNeural",
+    "粤语女声-晓敏": "zh-HK-HiuMaanNeural",
+    "台湾男声-云哲": "zh-TW-YunJheNeural",
 }
 
 RATE_OPTIONS = {
@@ -30,12 +33,47 @@ PITCH_OPTIONS = {
     "高": "+8Hz",
 }
 
+EMOTION_OPTIONS = {
+    "默认": {"rate_delta": 0, "pitch_delta": 0, "description": "保持基础音色"},
+    "开心": {"rate_delta": 12, "pitch_delta": 6, "description": "语速略快，音调略高"},
+    "温柔": {"rate_delta": -8, "pitch_delta": -2, "description": "语速略慢，音调柔和"},
+    "严肃": {"rate_delta": -10, "pitch_delta": -6, "description": "语速偏慢，音调偏低"},
+    "激动": {"rate_delta": 20, "pitch_delta": 8, "description": "语速更快，音调更高"},
+    "悲伤": {"rate_delta": -18, "pitch_delta": -8, "description": "语速更慢，音调更低"},
+}
+
 
 @dataclass
 class SynthesisResult:
     mp3_path: str
     wav_path: str | None
     message: str
+
+
+def _parse_percent(value: str) -> int:
+    return int(value.replace("%", "").replace("+", ""))
+
+
+def _parse_hz(value: str) -> int:
+    return int(value.replace("Hz", "").replace("+", ""))
+
+
+def _format_percent(value: int) -> str:
+    value = max(-50, min(50, value))
+    return f"{value:+d}%"
+
+
+def _format_hz(value: int) -> str:
+    value = max(-20, min(20, value))
+    return f"{value:+d}Hz"
+
+
+def apply_emotion(rate: str, pitch: str, emotion_label: str) -> tuple[str, str, str]:
+    """把情绪映射为语速和音调变化，保证不同音色都能稳定使用。"""
+    emotion = EMOTION_OPTIONS.get(emotion_label, EMOTION_OPTIONS["默认"])
+    final_rate = _format_percent(_parse_percent(rate) + emotion["rate_delta"])
+    final_pitch = _format_hz(_parse_hz(pitch) + emotion["pitch_delta"])
+    return final_rate, final_pitch, emotion["description"]
 
 
 async def _save_edge_tts(text: str, voice: str, rate: str, pitch: str, output_path: Path) -> None:
@@ -89,6 +127,7 @@ def synthesize_audiobook(
     voice_label: str,
     rate_label: str,
     pitch_label: str,
+    emotion_label: str = "默认",
     output_dir: str | Path = "outputs",
     basename: str | None = None,
     max_sentences: int | None = None,
@@ -104,6 +143,7 @@ def synthesize_audiobook(
     voice = VOICE_OPTIONS.get(voice_label, voice_label)
     rate = RATE_OPTIONS.get(rate_label, rate_label)
     pitch = PITCH_OPTIONS.get(pitch_label, pitch_label)
+    rate, pitch, emotion_description = apply_emotion(rate, pitch, emotion_label)
 
     use_sentences = sentences[:max_sentences] if max_sentences else sentences
     temp_dir = output_dir / f"tmp_{basename}"
@@ -120,7 +160,7 @@ def synthesize_audiobook(
         wav_path = output_dir / f"{basename}.wav"
         merge_mp3_files(part_files, mp3_path)
         wav_ok = convert_mp3_to_wav(mp3_path, wav_path)
-        message = f"合成完成：共处理 {len(use_sentences)} 段文本。"
+        message = f"合成完成：共处理 {len(use_sentences)} 段文本；情绪：{emotion_label}（{emotion_description}）。"
         if not wav_ok:
             message += " WAV 转换需要 ffmpeg 支持，当前已生成 MP3。"
         return SynthesisResult(str(mp3_path), str(wav_path) if wav_ok else None, message)

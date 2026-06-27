@@ -7,10 +7,9 @@ import gradio as gr
 
 from src.file_reader import read_book_file
 from src.text_preprocess import preprocess_text
-from src.tts_engine import PITCH_OPTIONS, RATE_OPTIONS, VOICE_OPTIONS, synthesize_audiobook
+from src.tts_engine import EMOTION_OPTIONS, PITCH_OPTIONS, RATE_OPTIONS, VOICE_OPTIONS, synthesize_audiobook
 
 LAST_SENTENCES: list[str] = []
-
 
 def load_and_preprocess(file, max_len: int):
     global LAST_SENTENCES
@@ -31,18 +30,19 @@ def load_and_preprocess(file, max_len: int):
         return f"处理失败：{exc}", "", "", ""
 
 
-def synthesize_from_ui(voice, rate, pitch, export_limit):
+def synthesize_from_ui(voice, emotion, rate, pitch, export_limit):
     if not LAST_SENTENCES:
         return None, None, "请先上传文件并完成文本预处理。"
     try:
-        limit = int(export_limit) if export_limit else None
-        if limit <= 0:
-            limit = None
+        limit = int(export_limit) if export_limit is not None else None
+        if limit is not None and limit <= 0:
+         limit = None
         result = synthesize_audiobook(
             LAST_SENTENCES,
             voice_label=voice,
             rate_label=rate,
             pitch_label=pitch,
+            emotion_label=emotion,
             output_dir="outputs",
             max_sentences=limit,
         )
@@ -57,7 +57,7 @@ def build_demo():
         gr.Markdown(
             """
             # 基于语音合成的有声读物生成系统
-            支持 TXT / PDF / EPUB 导入、文本预处理、基础音色选择、语速和音调调节、MP3/WAV 导出。  
+            支持 TXT / PDF / EPUB 导入、文本预处理、基础音色选择、情绪选择、语速和音调调节、MP3/WAV 导出。  
             说明：参考音频入口为后续扩展预留，当前版本不进行真实音色克隆。
             """
         )
@@ -74,9 +74,10 @@ def build_demo():
 
         with gr.Row():
             voice = gr.Dropdown(list(VOICE_OPTIONS.keys()), value="中文女声-晓晓（自然）", label="基础音色")
+            emotion = gr.Dropdown(list(EMOTION_OPTIONS.keys()), value="默认", label="情绪")
             rate = gr.Dropdown(list(RATE_OPTIONS.keys()), value="正常", label="语速")
             pitch = gr.Dropdown(list(PITCH_OPTIONS.keys()), value="中", label="音调")
-            export_limit = gr.Number(value=20, precision=0, label="演示合成句数上限，0表示全部")
+            export_limit = gr.Number(value=0, precision=0, label="合成句数上限，0表示全部")
 
         synth_btn = gr.Button("开始合成有声读物", variant="primary")
         audio_output = gr.Audio(label="合成音频预览", type="filepath")
@@ -90,11 +91,11 @@ def build_demo():
         )
         synth_btn.click(
             synthesize_from_ui,
-            inputs=[voice, rate, pitch, export_limit],
+            inputs=[voice, emotion, rate, pitch, export_limit],
             outputs=[audio_output, download_file, synth_status],
         )
     return demo
 
 
 if __name__ == "__main__":
-    build_demo().launch()
+    build_demo().launch(inbrowser=True)
