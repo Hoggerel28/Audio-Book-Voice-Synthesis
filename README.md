@@ -68,9 +68,11 @@ Running on local URL: http://127.0.0.1:7860
 http://127.0.0.1:7860
 ```
 
-注意：`127.0.0.1:7860` 是本地临时网页，不是一直在线的网站。必须先运行 `python app.py`，服务启动后才能访问；如果关闭 PowerShell、电脑重启、进程退出，网页就会显示无法访问。
+注意：`127.0.0.1:7860` 是本地临时网页，不是一直在线的网站。必须先运行 `python app.py`，服务启动后才能访问；
+如果关闭 PowerShell、电脑重启、进程退出，网页就会显示无法访问。
 
-如果运行 `python app.py` 后提示 `No module named 'gradio'`，说明当前 Python 没装依赖，请先运行：
+如果运行 `python app.py` 后提示 `No module named 'gradio'`
+说明当前 Python 没装依赖，请先运行：
 
 ```bash
 python -m pip install -r requirements.txt
