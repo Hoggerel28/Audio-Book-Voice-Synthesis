@@ -76,11 +76,6 @@ http://127.0.0.1:7860
 python -m pip install -r requirements.txt
 ```
 
-如果你在 Codex 工作目录中测试，也可以使用已经安装依赖的 Python：
-
-```powershell
-& "C:\Users\杨瑞\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" app.py
-```
 
 ## GitHub Pages 静态展示页
 
